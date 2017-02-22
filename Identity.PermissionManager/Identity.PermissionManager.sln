@@ -1,0 +1,81 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{ACDC6D27-B8C1-400C-B0EC-1A5B58B7B5FC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{67B59151-7A9E-45FD-B762-1A5340C467A6}"
+	ProjectSection(SolutionItems) = preProject
+		global.json = global.json
+	EndProjectSection
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Identity.PermissionManager.Api", "src\Identity.PermissionManager.Api\Identity.PermissionManager.Api.xproj", "{3DEE2AAE-2241-4089-8764-65950924F23F}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Identity.PermissionManager.BLL.Models", "src\Identity.PermissionManager.BLL.Models\Identity.PermissionManager.BLL.Models.xproj", "{ABAD2C19-D161-42B5-B053-2FFF528F08B9}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Identity.PermissionManager.BLL.Logic", "src\Identity.PermissionManager.BLL.Logic\Identity.PermissionManager.BLL.Logic.xproj", "{3C6BAA3F-3A37-4636-AC3B-BC792923F19A}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Identity.PermissionManager.DAL", "src\Identity.PermissionManager.DAL\Identity.PermissionManager.DAL.xproj", "{8C708DB4-B389-45BA-8E14-79C0C8C29952}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Identity.PermissionManager.ViewModels", "src\Identity.PermissionManager.ViewModels\Identity.PermissionManager.ViewModels.xproj", "{13D94904-82DC-4D48-B555-22058ECC6645}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "IdentityPermissionManager.Tests", "src\IdentityPermissionManager.Tests\IdentityPermissionManager.Tests.xproj", "{37E10E1E-2145-4CC5-8A46-BEB7F34177BF}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Identity.PermissionManager.Middleware", "src\Identity.PermissionManager.Middleware\Identity.PermissionManager.Middleware.xproj", "{D897C9CA-675D-405B-90DD-566746B192DB}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Identity.PermissionManager.Utilities", "src\Identity.PermissionManager.Utilities\Identity.PermissionManager.Utilities.xproj", "{ACE89F6E-DB0F-4419-8D91-927733162B34}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3DEE2AAE-2241-4089-8764-65950924F23F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3DEE2AAE-2241-4089-8764-65950924F23F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3DEE2AAE-2241-4089-8764-65950924F23F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3DEE2AAE-2241-4089-8764-65950924F23F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ABAD2C19-D161-42B5-B053-2FFF528F08B9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ABAD2C19-D161-42B5-B053-2FFF528F08B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ABAD2C19-D161-42B5-B053-2FFF528F08B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ABAD2C19-D161-42B5-B053-2FFF528F08B9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3C6BAA3F-3A37-4636-AC3B-BC792923F19A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C6BAA3F-3A37-4636-AC3B-BC792923F19A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C6BAA3F-3A37-4636-AC3B-BC792923F19A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C6BAA3F-3A37-4636-AC3B-BC792923F19A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8C708DB4-B389-45BA-8E14-79C0C8C29952}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C708DB4-B389-45BA-8E14-79C0C8C29952}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C708DB4-B389-45BA-8E14-79C0C8C29952}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C708DB4-B389-45BA-8E14-79C0C8C29952}.Release|Any CPU.Build.0 = Release|Any CPU
+		{13D94904-82DC-4D48-B555-22058ECC6645}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{13D94904-82DC-4D48-B555-22058ECC6645}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{13D94904-82DC-4D48-B555-22058ECC6645}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{13D94904-82DC-4D48-B555-22058ECC6645}.Release|Any CPU.Build.0 = Release|Any CPU
+		{37E10E1E-2145-4CC5-8A46-BEB7F34177BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{37E10E1E-2145-4CC5-8A46-BEB7F34177BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{37E10E1E-2145-4CC5-8A46-BEB7F34177BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{37E10E1E-2145-4CC5-8A46-BEB7F34177BF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D897C9CA-675D-405B-90DD-566746B192DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D897C9CA-675D-405B-90DD-566746B192DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D897C9CA-675D-405B-90DD-566746B192DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D897C9CA-675D-405B-90DD-566746B192DB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ACE89F6E-DB0F-4419-8D91-927733162B34}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ACE89F6E-DB0F-4419-8D91-927733162B34}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ACE89F6E-DB0F-4419-8D91-927733162B34}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ACE89F6E-DB0F-4419-8D91-927733162B34}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{3DEE2AAE-2241-4089-8764-65950924F23F} = {ACDC6D27-B8C1-400C-B0EC-1A5B58B7B5FC}
+		{ABAD2C19-D161-42B5-B053-2FFF528F08B9} = {ACDC6D27-B8C1-400C-B0EC-1A5B58B7B5FC}
+		{3C6BAA3F-3A37-4636-AC3B-BC792923F19A} = {ACDC6D27-B8C1-400C-B0EC-1A5B58B7B5FC}
+		{8C708DB4-B389-45BA-8E14-79C0C8C29952} = {ACDC6D27-B8C1-400C-B0EC-1A5B58B7B5FC}
+		{13D94904-82DC-4D48-B555-22058ECC6645} = {ACDC6D27-B8C1-400C-B0EC-1A5B58B7B5FC}
+		{37E10E1E-2145-4CC5-8A46-BEB7F34177BF} = {ACDC6D27-B8C1-400C-B0EC-1A5B58B7B5FC}
+		{D897C9CA-675D-405B-90DD-566746B192DB} = {ACDC6D27-B8C1-400C-B0EC-1A5B58B7B5FC}
+		{ACE89F6E-DB0F-4419-8D91-927733162B34} = {ACDC6D27-B8C1-400C-B0EC-1A5B58B7B5FC}
+	EndGlobalSection
+EndGlobal
