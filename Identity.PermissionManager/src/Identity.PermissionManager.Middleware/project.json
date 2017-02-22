@@ -6,9 +6,9 @@
     "Identity.PermissionManager.BLL.Models": "1.0.0-*",
     "Identity.PermissionManager.ViewModels": "1.0.0-*",
     "Microsoft.AspNetCore.Identity": "1.1.0",
-    "NETStandard.Library": "1.6.0",
+    "NETStandard.Library": "1.6.1",
     "Newtonsoft.Json": "9.0.1",
-    "System.IdentityModel.Tokens.Jwt": "5.0.0"
+    "System.IdentityModel.Tokens.Jwt": "5.1.2"
   },
 
   "frameworks": {
