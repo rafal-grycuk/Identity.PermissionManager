@@ -18,6 +18,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Identity.PermissionManager.BLL.Logic.PermissionManager;
 using Identity.PermissionManager.Middleware;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace Identity.PermissionManager.Api
 {
@@ -152,6 +153,7 @@ namespace Identity.PermissionManager.Api
             services.AddSingleton(x => mappingConfig.CreateMapper());
             services.AddScoped<IRepository<User>, Repository<User>>();
             services.AddScoped<IRepository<Role>, Repository<Role>>();
+            services.AddScoped<IRepository<IdentityUserRole<int>>, Repository<IdentityUserRole<int>>>();
             services.AddScoped<IRepository<Permission>, Repository<Permission>>();
             services.AddScoped<IRepository<PermissionGroup>, Repository<PermissionGroup>>();
             services.AddScoped<IRepository<PermissionRole<Role, int>>, Repository<PermissionRole<Role, int>>>();

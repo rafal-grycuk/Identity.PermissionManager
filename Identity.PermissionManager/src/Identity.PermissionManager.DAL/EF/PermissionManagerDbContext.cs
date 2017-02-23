@@ -18,7 +18,9 @@ namespace Identity.PermissionManager.DAL.EF
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(connectionStringDto.ConnectionString);
+            optionsBuilder.
+                UseInMemoryDatabase();
+            //UseSqlServer(connectionStringDto.ConnectionString);
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
