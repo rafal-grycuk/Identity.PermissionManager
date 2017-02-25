@@ -10,17 +10,15 @@ namespace Identity.PermissionManager.DAL.EF
         where TRole : IdentityRole<TKey>
         where TKey : IEquatable<TKey>
     {
-        protected readonly ConnectionStringDto connectionStringDto;
+        protected readonly ConnectionStringDto _connectionStringDto;
         public PermissionManagerDbContext(ConnectionStringDto connectionStringDto)
         {
-            this.connectionStringDto = connectionStringDto;
+            this._connectionStringDto = connectionStringDto;
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.
-                UseInMemoryDatabase();
-            //UseSqlServer(connectionStringDto.ConnectionString);
+            optionsBuilder.UseInMemoryDatabase();
         }
 
         protected override void OnModelCreating(ModelBuilder builder)

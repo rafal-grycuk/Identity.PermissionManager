@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Text;
 using BeThere.WebAPI.Configuration;
-using DataAccessLayer.Core.Repositories.Concrete;
-using DataAccessLayer.Core.Repositories.Interfaces;
-using DataAccessLayer.Core.UoW;
+using DataAccessLayer.Core.EntityFramework.Repositories;
+using DataAccessLayer.Core.EntityFramework.UoW;
+using DataAccessLayer.Core.Interfaces.Repositories;
+using DataAccessLayer.Core.Interfaces.UoW;
 using Identity.PermissionManager.BLL.Models;
 using Identity.PermissionManager.DAL.EF;
 using Microsoft.AspNetCore.Authorization;
@@ -18,6 +19,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Identity.PermissionManager.BLL.Logic.PermissionManager;
 using Identity.PermissionManager.Middleware;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace Identity.PermissionManager.Api
@@ -139,7 +141,6 @@ namespace Identity.PermissionManager.Api
             services.AddSingleton<ConnectionStringDto>(cs);
             services.AddScoped<DbContext, PermissionManagerDbContext<User, Role, int>>();
             services.AddScoped<DbContextOptions<PermissionManagerDbContext<User, Role, int>>>();
-    //        services.AddSingleton(new PermissionManager<User, Role, int>(new PermissionManagerDbContext<User, Role, int>(cs)));
             services.AddScoped<PermissionManager<User, Role, int>>();
             services.AddScoped<PermissionManagerDbContext<User, Role, int>>();
             services.AddScoped<IUnitOfWork,UnitOfWork>();
@@ -151,12 +152,13 @@ namespace Identity.PermissionManager.Api
             });
 
             services.AddSingleton(x => mappingConfig.CreateMapper());
-            services.AddScoped<IRepository<User>, Repository<User>>();
-            services.AddScoped<IRepository<Role>, Repository<Role>>();
-            services.AddScoped<IRepository<IdentityUserRole<int>>, Repository<IdentityUserRole<int>>>();
-            services.AddScoped<IRepository<Permission>, Repository<Permission>>();
-            services.AddScoped<IRepository<PermissionGroup>, Repository<PermissionGroup>>();
-            services.AddScoped<IRepository<PermissionRole<Role, int>>, Repository<PermissionRole<Role, int>>>();
+            services.AddScoped<IRepository<User>, EntityFrameworkRepository<User>>();
+            services.AddScoped<IRepository<IdentityUser<int>>, EntityFrameworkRepository<IdentityUser<int>>>();
+            services.AddScoped<IRepository<Role>, EntityFrameworkRepository<Role>>();
+            services.AddScoped<IRepository<IdentityUserRole<int>>, EntityFrameworkRepository<IdentityUserRole<int>>>();
+            services.AddScoped<IRepository<Permission>, EntityFrameworkRepository<Permission>>();
+            services.AddScoped<IRepository<PermissionGroup>, EntityFrameworkRepository<PermissionGroup>>();
+            services.AddScoped<IRepository<PermissionRole<Role, int>>, EntityFrameworkRepository<PermissionRole<Role, int>>>();
 
             #endregion
         }
@@ -218,11 +220,13 @@ namespace Identity.PermissionManager.Api
 
             app.UseCors("AllowAll");
 
-            app.UseApplicationInsightsRequestTelemetry();
+          //  app.UseApplicationInsightsRequestTelemetry();
 
-            app.UseApplicationInsightsExceptionTelemetry();
+          //  app.UseApplicationInsightsExceptionTelemetry();
             var uow = app.ApplicationServices.GetService<IUnitOfWork>();
-            Seed.AddPermission(uow);
+            var userManager = app.ApplicationServices.GetService<UserManager<User>>();
+            var roleManager = app.ApplicationServices.GetService<RoleManager<Role>>();
+            Seed.SeedData(uow, roleManager, userManager);
             app.UseMvc();
         }
     }

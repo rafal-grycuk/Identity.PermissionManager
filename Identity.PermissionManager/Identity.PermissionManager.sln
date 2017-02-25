@@ -20,11 +20,13 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Identity.PermissionManager.
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Identity.PermissionManager.ViewModels", "src\Identity.PermissionManager.ViewModels\Identity.PermissionManager.ViewModels.xproj", "{13D94904-82DC-4D48-B555-22058ECC6645}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "IdentityPermissionManager.Tests", "src\IdentityPermissionManager.Tests\IdentityPermissionManager.Tests.xproj", "{37E10E1E-2145-4CC5-8A46-BEB7F34177BF}"
-EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Identity.PermissionManager.Middleware", "src\Identity.PermissionManager.Middleware\Identity.PermissionManager.Middleware.xproj", "{D897C9CA-675D-405B-90DD-566746B192DB}"
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Identity.PermissionManager.Utilities", "src\Identity.PermissionManager.Utilities\Identity.PermissionManager.Utilities.xproj", "{ACE89F6E-DB0F-4419-8D91-927733162B34}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{2C291167-972B-4E0B-A9DA-94833E270674}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Identity.PermissionManager.Api.Tests", "test\Identity.PermissionManager.Api.Tests\Identity.PermissionManager.Api.Tests.xproj", "{94799C51-699E-4F32-916F-C254CDD22A35}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -52,10 +54,6 @@ Global
 		{13D94904-82DC-4D48-B555-22058ECC6645}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{13D94904-82DC-4D48-B555-22058ECC6645}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{13D94904-82DC-4D48-B555-22058ECC6645}.Release|Any CPU.Build.0 = Release|Any CPU
-		{37E10E1E-2145-4CC5-8A46-BEB7F34177BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{37E10E1E-2145-4CC5-8A46-BEB7F34177BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{37E10E1E-2145-4CC5-8A46-BEB7F34177BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{37E10E1E-2145-4CC5-8A46-BEB7F34177BF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D897C9CA-675D-405B-90DD-566746B192DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D897C9CA-675D-405B-90DD-566746B192DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D897C9CA-675D-405B-90DD-566746B192DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -64,6 +62,10 @@ Global
 		{ACE89F6E-DB0F-4419-8D91-927733162B34}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ACE89F6E-DB0F-4419-8D91-927733162B34}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ACE89F6E-DB0F-4419-8D91-927733162B34}.Release|Any CPU.Build.0 = Release|Any CPU
+		{94799C51-699E-4F32-916F-C254CDD22A35}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94799C51-699E-4F32-916F-C254CDD22A35}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94799C51-699E-4F32-916F-C254CDD22A35}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{94799C51-699E-4F32-916F-C254CDD22A35}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -74,8 +76,8 @@ Global
 		{3C6BAA3F-3A37-4636-AC3B-BC792923F19A} = {ACDC6D27-B8C1-400C-B0EC-1A5B58B7B5FC}
 		{8C708DB4-B389-45BA-8E14-79C0C8C29952} = {ACDC6D27-B8C1-400C-B0EC-1A5B58B7B5FC}
 		{13D94904-82DC-4D48-B555-22058ECC6645} = {ACDC6D27-B8C1-400C-B0EC-1A5B58B7B5FC}
-		{37E10E1E-2145-4CC5-8A46-BEB7F34177BF} = {ACDC6D27-B8C1-400C-B0EC-1A5B58B7B5FC}
 		{D897C9CA-675D-405B-90DD-566746B192DB} = {ACDC6D27-B8C1-400C-B0EC-1A5B58B7B5FC}
 		{ACE89F6E-DB0F-4419-8D91-927733162B34} = {ACDC6D27-B8C1-400C-B0EC-1A5B58B7B5FC}
+		{94799C51-699E-4F32-916F-C254CDD22A35} = {2C291167-972B-4E0B-A9DA-94833E270674}
 	EndGlobalSection
 EndGlobal

@@ -8,5 +8,7 @@ namespace Identity.PermissionManager.ViewModels.DTOs
 
         [Required]
         public string Name { get; set; }
+
+        public int? PermissionGroupId { get; set; }
     }
 }

@@ -2,7 +2,7 @@
   "version": "1.0.0-*",
 
   "dependencies": {
-    "DataAccessLayer.Core": "1.0.1",
+    "DataAccessLayer.Core.EntityFramework": "1.0.3",
     "Identity.PermissionManager.BLL.Models": "1.0.0-*",
     "Identity.PermissionManager.ViewModels": "1.0.0-*",
     "Microsoft.AspNetCore.Identity": "1.1.0",

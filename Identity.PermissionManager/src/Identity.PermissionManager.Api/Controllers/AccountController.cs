@@ -4,7 +4,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
-using DataAccessLayer.Core.UoW;
+using DataAccessLayer.Core.Interfaces.UoW;
 using Identity.PermissionManager.BLL.Logic.Filters;
 using Identity.PermissionManager.BLL.Models;
 using Identity.PermissionManager.Middleware;
@@ -25,12 +25,12 @@ namespace Identity.PermissionManager.Api.Controllers
     [Route("api/[controller]")]
     public class AccountController : BaseApiController
     {
-        private readonly UserManager<User> userManager;
+        private readonly UserManager<User> _userManager;
 
-        private readonly JwtIssuerOptions jwtOptions;
-        private readonly ILogger logger;
-        private readonly JsonSerializerSettings serializerSettings;
-        private readonly TokenProviderMiddleware tokenProviderMiddleware;
+        private readonly JwtIssuerOptions _jwtOptions;
+        private readonly ILogger _logger;
+        private readonly JsonSerializerSettings _serializerSettings;
+        private readonly TokenProviderMiddleware _tokenProviderMiddleware;
 
         public AccountController(IUnitOfWork uow,
             UserManager<User> userManager,
@@ -41,14 +41,14 @@ namespace Identity.PermissionManager.Api.Controllers
         )
             : base(uow)
         {
-            this.userManager = userManager;
-            this.jwtOptions = jwtOptions.Value;
-            this.tokenProviderMiddleware = tokenProviderMiddleware;
-            tokenProviderMiddleware.ThrowIfInvalidOptions(this.jwtOptions);
+            this._userManager = userManager;
+            this._jwtOptions = jwtOptions.Value;
+            this._tokenProviderMiddleware = tokenProviderMiddleware;
+            tokenProviderMiddleware.ThrowIfInvalidOptions(this._jwtOptions);
 
-            logger = loggerFactory.CreateLogger<AccountController>();
+            _logger = loggerFactory.CreateLogger<AccountController>();
 
-            serializerSettings = new JsonSerializerSettings
+            _serializerSettings = new JsonSerializerSettings
             {
                 Formatting = Formatting.Indented
             };
@@ -64,7 +64,7 @@ namespace Identity.PermissionManager.Api.Controllers
                 if (ModelState.IsValid)
                 {
                     var entity = Mapper.Map<User>(dto);
-                    var result = await userManager.CreateAsync(entity, dto.Password);
+                    var result = await _userManager.CreateAsync(entity, dto.Password);
                     if (result.Succeeded)
                         return Ok(new {success = true});
                     else
@@ -85,10 +85,10 @@ namespace Identity.PermissionManager.Api.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Login([FromForm] LoginUserVm applicationUser)
         {
-            var identity = await tokenProviderMiddleware.GetClaimsIdentity(applicationUser);
+            var identity = await _tokenProviderMiddleware.GetClaimsIdentity(applicationUser);
             if (identity == null)
             {
-                logger.LogInformation(
+                _logger.LogInformation(
                     $"Invalid username ({applicationUser.Email}) or password ({applicationUser.Password})");
                 return BadRequest("Invalid credentials");
             }
@@ -96,20 +96,20 @@ namespace Identity.PermissionManager.Api.Controllers
             var claims = new[]
             {
                 new Claim(JwtRegisteredClaimNames.Sub, applicationUser.Email),
-                new Claim(JwtRegisteredClaimNames.Jti, await jwtOptions.JtiGenerator()),
+                new Claim(JwtRegisteredClaimNames.Jti, await _jwtOptions.JtiGenerator()),
                 new Claim(JwtRegisteredClaimNames.Iat,
-                    tokenProviderMiddleware.ToUnixEpochDate(jwtOptions.IssuedAt).ToString(), ClaimValueTypes.Integer64),
+                    _tokenProviderMiddleware.ToUnixEpochDate(_jwtOptions.IssuedAt).ToString(), ClaimValueTypes.Integer64),
                 identity.FindFirst("IdentityUser")
             };
 
             // Create the JWT security token and encode it.
             var jwt = new JwtSecurityToken(
-                issuer: jwtOptions.Issuer,
-                audience: jwtOptions.Audience,
+                issuer: _jwtOptions.Issuer,
+                audience: _jwtOptions.Audience,
                 claims: claims,
-                notBefore: jwtOptions.NotBefore,
-                expires: jwtOptions.Expiration,
-                signingCredentials: jwtOptions.SigningCredentials);
+                notBefore: _jwtOptions.NotBefore,
+                expires: _jwtOptions.Expiration,
+                signingCredentials: _jwtOptions.SigningCredentials);
 
             var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
 
@@ -117,21 +117,20 @@ namespace Identity.PermissionManager.Api.Controllers
             var response = new
             {
                 access_token = encodedJwt,
-                expires_in = (int) jwtOptions.ValidFor.TotalSeconds
+                expires_in = (int) _jwtOptions.ValidFor.TotalSeconds
             };
 
-            var json = JsonConvert.SerializeObject(response, serializerSettings);
+            var json = JsonConvert.SerializeObject(response, _serializerSettings);
             return new OkObjectResult(json);
         }
 
         [HttpGet]
-        [HasPermission(PermissionOperator.Or, "Read", "Execute", "Write")]
         public IActionResult Get()
         {
             var authenticatedUser = ((ClaimsIdentity) User?.Identity)?.Claims?.First()?.Value;
             if (authenticatedUser != null)
             {
-                var user = uow.Repository<User>().Get(u => u.Email == authenticatedUser, false);
+                var user = _uow.Repository<User>().Get(u => u.Email == authenticatedUser, false);
                 if (user != null)
                 {
 

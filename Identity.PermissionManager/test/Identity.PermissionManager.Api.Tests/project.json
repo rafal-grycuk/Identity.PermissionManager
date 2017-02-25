@@ -1,0 +1,40 @@
+{
+  "version": "1.0.0-*",
+  "testRunner": "xunit",
+  "buildOptions": {
+    "emitEntryPoint": true
+  },
+
+  "dependencies": {
+    "DataAccessLayer.Core.EntityFramework": "1.0.3",
+    "DataAccessLayer.Core.Interfaces": "1.0.2",
+    "dotnet-test-xunit": "2.2.0-preview2-build1029",
+    "Identity.PermissionManager.ViewModels": "1.0.0-*",
+    "Microsoft.EntityFrameworkCore": "1.1.0",
+    "Microsoft.EntityFrameworkCore.InMemory": "1.1.0",
+    "Microsoft.Net.Http": "2.2.29",
+    "Microsoft.NETCore.App": "1.1.0",
+    "Moq": "4.7.0",
+    "System.Linq": "4.3.0",
+    "xunit": "2.2.0"
+  },
+
+  "frameworks": {
+    "netcoreapp1.0": {
+      "imports": [
+        "dotnet54",
+        "portable-net45+win8"
+      ]
+    }
+  },
+  "runtimes": {
+    "win10-x64": {}
+  }
+}
+
+
+
+
+
+
+

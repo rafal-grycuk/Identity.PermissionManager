@@ -9,14 +9,14 @@ namespace Identity.PermissionManager.BLL.Logic.Filters
 {
     public class HasPermissionAttribute : ActionFilterAttribute
     {
-        private string[] permissions;
-        private PermissionOperator permissionOperator;
+        private string[] _permissions;
+        private PermissionOperator _permissionOperator;
         private PermissionManager<User, Role, int> permissionManager;
 
         public HasPermissionAttribute(PermissionOperator permissionOperator, params string[] permissions)
         {
-            this.permissions = permissions;
-            this.permissionOperator = permissionOperator;
+            this._permissions = permissions;
+            this._permissionOperator = permissionOperator;
         }
 
         public override void OnActionExecuting(ActionExecutingContext filterContext)
@@ -29,7 +29,7 @@ namespace Identity.PermissionManager.BLL.Logic.Filters
             var authenticatedUser =
                 ((ClaimsIdentity) filterContext.HttpContext.User?.Identity)?.Claims.ToList()
                 .Find(claim => claim.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier");
-            if (!this.permissionManager.CheckPermissions(this.permissionOperator, this.permissions, authenticatedUser.Value))
+            if (!this.permissionManager.CheckPermissions(this._permissionOperator, this._permissions, authenticatedUser.Value))
             {
                 filterContext.Result = new UnauthorizedResult();
             }

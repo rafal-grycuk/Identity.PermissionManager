@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-using DataAccessLayer.Core.Repositories.Interfaces;
+using DataAccessLayer.Core.Interfaces.Repositories;
 using Identity.PermissionManager.BLL.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
@@ -11,29 +11,29 @@ namespace Identity.PermissionManager.BLL.Logic.PermissionManager
         where TRole : IdentityRole<TKey>
         where TKey : IEquatable<TKey>
     {
-        private readonly IRepository<User> userRepository;
-        private readonly IRepository<Permission> permissionRepository;
-        private readonly IRepository<PermissionRole<Role, int>> permissionRoleRepository;
-        private readonly IRepository<PermissionGroup> permissionGroupRepository;
-        private readonly IRepository<IdentityUserRole<int>> userRoleRepository;
+        private readonly IRepository<IdentityUser<TKey>> _userRepository;
+        private readonly IRepository<Permission> _permissionRepository;
+        private readonly IRepository<PermissionRole<TRole, TKey>> _permissionRoleRepository;
+        private readonly IRepository<PermissionGroup> _permissionGroupRepository;
+        private readonly IRepository<IdentityUserRole<TKey>> _userRoleRepository;
 
-        public PermissionManager(IRepository<User> userRepository, 
+        public PermissionManager(IRepository<IdentityUser<TKey>> userRepository, 
                                  IRepository<Permission> permissionRepository, 
-                                 IRepository<PermissionRole<Role, int>> permissionRoleRepository,
+                                 IRepository<PermissionRole<TRole, TKey>> permissionRoleRepository,
                                  IRepository<PermissionGroup> permissionGroupRepository,
-                                 IRepository<IdentityUserRole<int>> userRoleRepository)
+                                 IRepository<IdentityUserRole<TKey>> userRoleRepository)
         {
-            this.userRepository = userRepository;
-            this.permissionGroupRepository = permissionGroupRepository;
-            this.permissionRepository = permissionRepository;
-            this.permissionRoleRepository = permissionRoleRepository;
-            this.userRoleRepository = userRoleRepository;
+            this._userRepository = userRepository;
+            this._permissionGroupRepository = permissionGroupRepository;
+            this._permissionRepository = permissionRepository;
+            this._permissionRoleRepository = permissionRoleRepository;
+            this._userRoleRepository = userRoleRepository;
         }
 
         public bool CheckPermissions(PermissionOperator permissionOperator, string[] permissions, string email)
         {
-            var userPermissions = userRepository.GetRange(user => user.Email == email, false).Join(userRoleRepository.GetRange(enableTracking: false), u => u.Id, ur => ur.UserId, (u, ur) => new { ur.RoleId })
-                                                 .Join(permissionRoleRepository.GetRange(enableTracking: false), r => r.RoleId, per => per.RoleId, (r, per) => new { per.Permission })
+            var userPermissions = _userRepository.GetRange(user => user.Email == email, false).Join(_userRoleRepository.GetRange(enableTracking: false), u => u.Id, ur => ur.UserId, (u, ur) => new { ur.RoleId })
+                                                 .Join(_permissionRoleRepository.GetRange(enableTracking: false), r => r.RoleId, per => per.RoleId, (r, per) => new { per.Permission })
                                                  .Distinct()
                                                  .ToList();
             var inter = userPermissions.Where(p => permissions.Any(x => x == p.Permission.Name)).ToList();
@@ -45,15 +45,10 @@ namespace Identity.PermissionManager.BLL.Logic.PermissionManager
         {
             if (string.IsNullOrWhiteSpace(permissionModel.Name) == false)
             {
-                Permission permissionEntity = permissionRepository.Get(x => x.Name == permissionModel.Name);
+                Permission permissionEntity = _permissionRepository.Get(permissionModel.Id);
                 if (permissionEntity == null)
                 {
-                    permissionEntity = new Permission()
-                    {
-                        Name = permissionModel.Name
-                    };
-                    permissionRepository.Add(permissionEntity);
-
+                    permissionEntity =_permissionRepository.Add(permissionModel);
                 }
                 else
                 {
@@ -62,112 +57,111 @@ namespace Identity.PermissionManager.BLL.Logic.PermissionManager
                     permissionEntity.PermissionGroupId = permissionModel.PermissionGroupId;
                     permissionEntity.Id = permissionModel.Id;
                     permissionEntity.PermissionRoles = permissionModel.PermissionRoles;
-
-                    permissionRepository.Update(permissionEntity);
+                    _permissionRepository.Update(permissionEntity);
                 }
                 return permissionEntity;
-
-                //context.SaveChanges();
-                //var result = context.Permissions;
-                //result.Include(pr => pr.PermissionRoles).ThenInclude(r => r.Role).Include(g => g.PermissionGroup).Load();
-                //return result.FirstOrDefault(x => x.Id == permissionEntity.Id);
             }
             else throw new ArgumentNullException("Permission name cannot be empty.");
         }
 
-        //public PermissionGroup AddOrUpdatePermissionGroup(PermissionGroup groupModel)
-        //{
-        //    if (string.IsNullOrWhiteSpace(groupModel.GroupName) == false)
-        //    {
-        //        PermissionGroup groupEntity =
-        //            context.PermissionGroups.FirstOrDefault(x => x.GroupName == groupModel.GroupName);
-        //        if (groupEntity == null)
-        //        {
-        //            groupEntity = new PermissionGroup()
-        //            {
-        //                GroupName = groupModel.GroupName
-        //            };
-        //            context.PermissionGroups.Add(groupEntity);
-        //        }
-        //        else
-        //        {
-        //            groupEntity = new PermissionGroup();
-        //            groupEntity.Permissions = groupModel.Permissions;
-        //            groupEntity.Id = groupModel.Id;
-        //            groupEntity.GroupName = groupModel.GroupName;
-        //        }
-        //        context.SaveChanges();
-        //        var res = context.PermissionGroups.Include(p => p.Permissions);
-        //        res.Load();
-        //        return res.FirstOrDefault(x => x.Id == groupEntity.Id);
-        //    }
-        //    else throw new ArgumentNullException("Group name is empty or whitespace.");
-        //}
+        public PermissionGroup AddOrUpdatePermissionGroup(PermissionGroup groupModel)
+        {
+            if (string.IsNullOrWhiteSpace(groupModel.GroupName) == false)
+            {
+                PermissionGroup groupEntity = _permissionGroupRepository.Get(x => x.GroupName == groupModel.GroupName);
+                if (groupEntity == null)
+                {
+                    groupEntity = new PermissionGroup()
+                    {
+                        GroupName = groupModel.GroupName
+                    };
+                    _permissionGroupRepository.Add(groupEntity);
+                }
+                else
+                {
+                    groupEntity = new PermissionGroup
+                    {
+                        Permissions = groupModel.Permissions,
+                        Id = groupModel.Id,
+                        GroupName = groupModel.GroupName
+                    };
+                }
+                //context.SaveChanges();
+                //var res = context.PermissionGroups.Include(p => p.Permissions);
+                //res.Load();
+                //return res.FirstOrDefault(x => x.Id == groupEntity.Id);
+                return groupEntity;
+            }
+            else throw new ArgumentNullException("Group name is empty or whitespace.");
+        }
 
-        //public Permission AttachPermissionToGroup(PermissionGroup permissionGroup, Permission permission)
-        //{
-        //    if (permission != null && permissionGroup != null)
-        //    {
-        //        permission.PermissionGroup = permissionGroup;
-        //        permission.PermissionGroupId = permissionGroup.Id;
-        //        context.Permissions.Update(permission);
-        //        context.SaveChanges();
-        //        var result = context.Permissions;
-        //        result.Include(pr => pr.PermissionRoles).ThenInclude(r => r.Role).Include(g => g.PermissionGroup).Load();
-        //        return result.FirstOrDefault(x => x.Id == permission.Id);
-        //    }
-        //    else throw new ArgumentNullException("Permission and Permission Group cannot be null. ");
-        //}
+        public Permission AttachPermissionToGroup(PermissionGroup permissionGroup, Permission permission)
+        {
+            if (permission != null && permissionGroup != null)
+            {
+                permission.PermissionGroup = permissionGroup;
+                permission.PermissionGroupId = permissionGroup.Id;
+                permission =_permissionRepository.Update(permission);
+                //context.SaveChanges();
+                //var result = context.Permissions;
+                //result.Include(pr => pr.PermissionRoles).ThenInclude(r => r.Role).Include(g => g.PermissionGroup).Load();
+                //return result.FirstOrDefault(x => x.Id == permission.Id);
+                return permission;
+            }
+            else throw new ArgumentNullException("Permission and Permission Group cannot be null. ");
+        }
 
-        //public Permission DetachPermissionFromGroup(Permission permission)
-        //{
-        //    permission.PermissionGroup = null;
-        //    permission.PermissionGroupId = null;
-        //    context.Permissions.Update(permission);
-        //    context.SaveChanges();
-        //    var result = context.Permissions;
-        //    result.Include(pr => pr.PermissionRoles).ThenInclude(r => r.Role).Include(g => g.PermissionGroup).Load();
-        //    return result.FirstOrDefault(x => x.Id == permission.Id);
-        //}
+        public Permission DetachPermissionFromGroup(Permission permission)
+        {
+            permission.PermissionGroup = null;
+            permission.PermissionGroupId = null;
+            permission = _permissionRepository.Update(permission);
+            //context.SaveChanges();
+            //var result = context.Permissions;
+            //result.Include(pr => pr.PermissionRoles).ThenInclude(r => r.Role).Include(g => g.PermissionGroup).Load();
+            //return result.FirstOrDefault(x => x.Id == permission.Id);
+            return permission;
+        }
 
-        //public Permission AttachPermissionToRole(Permission permission, TRole role)
-        //{
-        //    var permissionRoleEntity = context.PermissionRoles.FirstOrDefault(x => x.PermissionId == permission.Id && x.RoleId.Equals(role.Id));
-        //    if (permissionRoleEntity == null)
-        //    {
-        //        PermissionRole<TRole, TKey> permissionRole = new PermissionRole<TRole, TKey>()
-        //        {
-        //            PermissionId = permission.Id,
-        //            RoleId = role.Id
-        //        };
-        //        context.PermissionRoles.Add(permissionRole);
-        //        context.SaveChanges();
-        //        var result = context.Permissions;
-        //        result.Include(pr => pr.PermissionRoles).ThenInclude(r => r.Role).Include(g => g.PermissionGroup).Load();
-        //        return result.FirstOrDefault(x => x.Id == permission.Id);
-        //    }
-        //    else
-        //        throw new ArgumentException("Given association already exists.");
-        //}
+        public Permission AttachPermissionToRole(Permission permission, TRole role)
+        {
+            var permissionRoleEntity = _permissionRoleRepository.Get(x => x.PermissionId == permission.Id && x.RoleId.Equals(role.Id));
+            if (permissionRoleEntity == null)
+            {
+                PermissionRole<TRole, TKey> permissionRole = new PermissionRole<TRole, TKey>()
+                {
+                    PermissionId = permission.Id,
+                    RoleId = role.Id
+                };
+                _permissionRoleRepository.Add(permissionRole);
+                //context.SaveChanges();
+                //var result = context.Permissions;
+                //result.Include(pr => pr.PermissionRoles).ThenInclude(r => r.Role).Include(g => g.PermissionGroup).Load();
+                //return result.FirstOrDefault(x => x.Id == permission.Id);
+                return permission;
+            }
+            else
+                throw new ArgumentException("Given association already exists.");
+        }
 
-        //public Permission DetachPermissionFromRole(Permission permission, TRole role)
-        //{
-        //    // potentially problems with ref types, check if string is working
-        //    var permissionRole = context.PermissionRoles
-        //                                .Include(p => p.Permission).ThenInclude(g => g.PermissionGroup)
-        //                                .Include(r => r.Role)
-        //                                .FirstOrDefault(x => x.PermissionId == permission.Id && x.RoleId.Equals(role.Id));
-        //    if (permissionRole != null)
-        //    {
-        //        context.PermissionRoles.Remove(permissionRole);
-        //        context.SaveChanges();
-        //        var result = context.Permissions;
-        //        result.Include(pr => pr.PermissionRoles).ThenInclude(r => r.Role).Include(g => g.PermissionGroup).Load();
-        //        return result.FirstOrDefault(x => x.Id == permission.Id);
+        public Permission DetachPermissionFromRole(Permission permission, TRole role)
+        {
+            // potentially problems with ref types, check if string is working
+            var permissionRole =
+                _permissionRoleRepository.Get(x => x.PermissionId == permission.Id && x.RoleId.Equals(role.Id), true,
+                    null, p => p.Permission.PermissionGroup, r => r.Role);
+            if (permissionRole != null)
+            {
+                _permissionRoleRepository.Delete(permissionRole);
+                //context.SaveChanges();
+                //var result = context.Permissions;
+                //result.Include(pr => pr.PermissionRoles).ThenInclude(r => r.Role).Include(g => g.PermissionGroup).Load();
+                //return result.FirstOrDefault(x => x.Id == permission.Id);
+               return permission;
+            }
 
-        //    }
-        //    else
-        //        throw new ArgumentException("There is no such association in the database.");
-        //}
+            else
+                throw new ArgumentException("There is no such association in the database.");
+        }
     }
 }

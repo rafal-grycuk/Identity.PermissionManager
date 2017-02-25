@@ -1,62 +1,56 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using DataAccessLayer.Core.UoW;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Identity.PermissionManager.Api.Controllers;
+using DataAccessLayer.Core.Interfaces.UoW;
 using Identity.PermissionManager.BLL.Models;
 using Identity.PermissionManager.Utilities.Extensions;
 using Identity.PermissionManager.ViewModels.DTOs;
 using Identity.PermissionManager.ViewModels.VMs;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
-namespace BeThere.WebAPI.Controllers.PermissionManegment
+namespace Identity.PermissionManager.Api.Controllers.PermissionManagement
 {
     [Authorize(Policy = "IdentityUser", Roles = "Admin")]
     [Route("api/[controller]")]
     public class UserController : BaseApiController
     {
-        private readonly UserManager<User> userManager;
+        private readonly UserManager<User> _userManager;
 
         public UserController(IUnitOfWork uow, UserManager<User> userManager) : base(uow)
         {
-            this.userManager = userManager;
+            this._userManager = userManager;
         }
 
-        //// GET: api/values
-        //[HttpGet]
-        //public IActionResult Get()
-        //{
-        //    try
-        //    {
-        //        var usersVm = new List<UserVm>();
-        //        var users = uow.Context.Users.
-        //            Include(r => r.Roles);
-        //        foreach (var user in users)
-        //        {
-        //            var roles = uow.Context.Roles
-        //                .Include(pr => pr.PermissionRoles)
-        //                .ThenInclude(p => p.Permission)
-        //                .Where(r => r.Users.Any(x => x.UserId == user.Id)).ToList();
-        //            var userVm = Mapper.Map<UserVm>(user);
-        //            userVm.RolesList = Mapper.Map<IEnumerable<RoleVm>>(roles);
-        //            usersVm.Add(userVm);
-        //        }
-        //        Response<IEnumerable<UserVm>> response = new Response<IEnumerable<UserVm>>("Get action performed successfully.", usersVm);
-        //        return Ok(response);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(500, ex.Message);
-        //    }
-        //}
+        // GET: api/values
+        [HttpGet]
+        public IActionResult Get()
+        {
+            try
+            {
+                var usersVm = new List<UserVm>();
+                var users = _uow.Repository<User>().GetRange(null, false, null, r => r.Roles);
+                foreach (var user in users)
+                {
+                    var roles = _uow.Repository<Role>()
+                    .GetRange(r => r.Users.Any(x => x.UserId == user.Id), false, null ,pr => pr.PermissionRoles.Select(p => p.Permission));
+                    var userVm = Mapper.Map<UserVm>(user);
+                    userVm.RolesList = Mapper.Map<IEnumerable<RoleVm>>(roles);
+                    usersVm.Add(userVm);
+                }
+                Response<IEnumerable<UserVm>> response = new Response<IEnumerable<UserVm>>("Get action performed successfully.", usersVm);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
 
         // GET api/values/5
         [HttpGet("{id}")]
@@ -64,17 +58,10 @@ namespace BeThere.WebAPI.Controllers.PermissionManegment
         {
             try
             {
-                var user = uow.Repository<User>().Get(id, false, r => r.Roles);
-                    //uow.Context.Users.
-                    //Include(r => r.Roles)
-                    //.FirstOrDefault(x => x.Id == id);
-
-                var roles = uow.Repository<Role>()
-                    .Get(r => r.Users.Any(x => x.UserId == user.Id), false, pr => pr.PermissionRoles, pr => pr.PermissionRoles.Select(p=>p.Permission));
-                    //uow.Context.Roles
-                    //.Include(pr => pr.PermissionRoles)
-                    //.ThenInclude(p => p.Permission)
-                    //.Where(r => r.Users.Any(x => x.UserId == user.Id)).ToList();
+                var user = _uow.Repository<User>().Get(id, false, r => r.Roles);
+                 
+                var roles = _uow.Repository<Role>()
+                    .GetRange(r => r.Users.Any(x => x.UserId == user.Id), false, null, pr => pr.PermissionRoles.Select(p => p.Permission));
                 var userVm = Mapper.Map<UserVm>(user);
                 userVm.RolesList = Mapper.Map<IEnumerable<RoleVm>>(roles);
 
@@ -93,8 +80,8 @@ namespace BeThere.WebAPI.Controllers.PermissionManegment
         {
             try
             {
-                var userEntity = Mapper.Map<User>(dto);
-                IdentityResult result = await userManager.CreateAsync(userEntity);
+var userEntity = Mapper.Map<User>(dto);
+                IdentityResult result = await _userManager.CreateAsync(userEntity);
                 if (result.Succeeded == true)
                 {
                     var userVm = Mapper.Map<UserVm>(userEntity);
@@ -116,13 +103,13 @@ namespace BeThere.WebAPI.Controllers.PermissionManegment
         {
             try
             {
-                var userEntity = await userManager.FindByIdAsync(id.ToString());
+                var userEntity = await _userManager.FindByIdAsync(id.ToString());
                 userEntity.Email = dto.Email ?? userEntity.Email;
                 userEntity.FirstName = dto.FirstName ?? userEntity.FirstName;
                 userEntity.LastName = dto.LastName ?? userEntity.LastName;
                 userEntity.PhoneNumber = dto.PhoneNumber ?? userEntity.PhoneNumber;
                 userEntity.UserName = dto.UserName?? userEntity.UserName ;
-                IdentityResult result = await userManager.UpdateAsync(userEntity);
+                IdentityResult result = await _userManager.UpdateAsync(userEntity);
                 if (result.Succeeded == true)
                 {
                     var userVm = Mapper.Map<UserVm>(userEntity);
@@ -144,14 +131,14 @@ namespace BeThere.WebAPI.Controllers.PermissionManegment
         {
             try
             {
-                var userEntity = await userManager.FindByIdAsync(id.ToString());
+                var userEntity = await _userManager.FindByIdAsync(id.ToString());
                 Response<PermissionVm> response = null;
                 if (userEntity == null)
                 {
                     response = new Response<PermissionVm>("User not exists");
                     return Ok(response);
                 }
-                var result = await userManager.DeleteAsync(userEntity);
+                var result = await _userManager.DeleteAsync(userEntity);
                 if (result.Succeeded == true)
                 {
                     response = new Response<PermissionVm>("Delete action performed successfully.");

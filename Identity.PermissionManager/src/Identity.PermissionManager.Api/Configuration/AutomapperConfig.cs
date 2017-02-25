@@ -34,6 +34,9 @@ namespace BeThere.WebAPI.Configuration
                 cfg.CreateMap<RoleDto, Role>();
 
                 cfg.CreateMap<User, UserVm>();
+                cfg.CreateMap<UserDto, User>();
+                
+
             });
 
 
