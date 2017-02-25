@@ -10,17 +10,25 @@ namespace Identity.PermissionManager.DAL.EF
         where TRole : IdentityRole<TKey>
         where TKey : IEquatable<TKey>
     {
-        protected readonly ConnectionStringDto _connectionStringDto;
-        public PermissionManagerDbContext(ConnectionStringDto connectionStringDto)
+        private readonly ConnectionStringDto _connectionStringDto;
+        private readonly DbLocation _databaseLocation;
+        public PermissionManagerDbContext(ConnectionStringDto connectionStringDto, DbLocation databaseLocation) : base()
         {
             this._connectionStringDto = connectionStringDto;
+            this._databaseLocation = databaseLocation;
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             base.OnConfiguring(optionsBuilder);
-           // optionsBuilder.UseSqlServer(this._connectionStringDto.ConnectionString);
-            optionsBuilder.UseInMemoryDatabase();
+            if (_databaseLocation.DatabaseLocation== DatabaseLocation.InMemory)
+            {
+                optionsBuilder.UseInMemoryDatabase();
+            }
+            else if (_databaseLocation.DatabaseLocation == DatabaseLocation.SqlServer)
+            {
+                optionsBuilder.UseSqlServer(this._connectionStringDto.ConnectionString);
+            }
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -35,7 +43,7 @@ namespace Identity.PermissionManager.DAL.EF
 
             builder.Entity<PermissionRole<TRole, TKey>>()
                 .ToTable("PermissionRole")
-                .HasKey(t => new {t.PermissionId, t.RoleId});
+                .HasKey(t => new { t.PermissionId, t.RoleId });
 
 
         }
@@ -44,5 +52,21 @@ namespace Identity.PermissionManager.DAL.EF
         public DbSet<PermissionRole<TRole, TKey>> PermissionRoles { get; set; }
         public DbSet<PermissionGroup> PermissionGroups { get; set; }
 
+    }
+
+    public enum DatabaseLocation
+    {
+        SqlServer = 1,
+        InMemory = 2
+    }
+
+    public class DbLocation
+    {
+        public  DatabaseLocation DatabaseLocation { get; }
+        public DbLocation(DatabaseLocation databaseLocation)
+        {
+            DatabaseLocation = databaseLocation;
+            this.DatabaseLocation = databaseLocation;
+        }
     }
 }

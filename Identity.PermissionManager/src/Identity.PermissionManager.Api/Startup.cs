@@ -66,10 +66,16 @@ namespace Identity.PermissionManager.Api
 
             services.AddApplicationInsightsTelemetry(Configuration);
 
+            DbLocation databaseLocation = new DbLocation(DatabaseLocation.InMemory);
+
             services.AddDbContext<PermissionManagerDbContext<User, Role, int>>(options =>
-               //options.UseSqlServer(_connectionString) // existing database
-              options.UseInMemoryDatabase() // in memory DB
-            );
+            {
+                if (databaseLocation.DatabaseLocation == DatabaseLocation.InMemory)
+                    options.UseInMemoryDatabase(); // in memory DB
+                else if (databaseLocation.DatabaseLocation == DatabaseLocation.SqlServer)
+                    options.UseSqlServer(_connectionString); // existing database
+                
+            });
 
             services.AddIdentity<User, Role>(o =>
             {
@@ -140,6 +146,7 @@ namespace Identity.PermissionManager.Api
 
             var cs = new ConnectionStringDto() { ConnectionString = _connectionString };
             services.AddSingleton<ConnectionStringDto>(cs);
+            services.AddSingleton<DbLocation>(databaseLocation);
             services.AddScoped<DbContext, PermissionManagerDbContext<User, Role, int>>();
             services.AddScoped<DbContextOptions<PermissionManagerDbContext<User, Role, int>>>();
             services.AddScoped<PermissionManager<User, Role, int>>();

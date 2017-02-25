@@ -1,4 +1,14 @@
 {
+  "title": "Identity.PermissionManager.Api",
+  "copyright": "By Rafal Grycuk",
+  "description": ".Net Core Api whitch extends basic functionality of Microsoft Identity by Permission Manager",
+  "version": "1.0.0",
+  "authors": [ "Rafal Grycuk" ],
+  "packOptions": {
+    "releaseNotes": "Start",
+    "tags": [ "Permission Manager", "Permission", "Manager", "Identity" ]
+
+  },
   "dependencies": {
     "Microsoft.AspNetCore.Identity": "1.1.0",
     "Microsoft.EntityFrameworkCore": "1.1.0",
@@ -27,7 +37,7 @@
     "Microsoft.Extensions.Options.ConfigurationExtensions": "1.1.0",
     "Microsoft.NETCore.App": "1.1.0",
     "DataAccessLayer.Core.EntityFramework": "1.0.3",
-    "Microsoft.Extensions.SecretManager.Tools": "1.1.0-preview4-final"
+    "Microsoft.Extensions.SecretManager.Tools": "1.0.0-preview2-final"
   },
 
   "tools": {

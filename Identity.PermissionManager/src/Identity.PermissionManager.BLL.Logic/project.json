@@ -1,5 +1,14 @@
 {
-  "version": "1.0.0-*",
+  "title": "Identity.PermissionManager",
+  "copyright": "By Rafal Grycuk",
+  "description": ".Net Core libraty whitch extends basic functionality of Microsoft Identity by Permission Manager",
+  "version": "1.0.0",
+  "authors": [ "Rafal Grycuk" ],
+  "packOptions": {
+    "releaseNotes": "Start",
+    "tags": [ "Permission Manager", "Permission", "Manager", "Identity" ]
+
+  },
 
   "dependencies": {
     "DataAccessLayer.Core.EntityFramework": "1.0.3",
