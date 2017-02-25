@@ -41,6 +41,7 @@ namespace Identity.PermissionManager.Api.Controllers.PermissionManagement
                     GroupName = permissionGroupName
                 };
                 var res = _permissionManager.AddOrUpdatePermissionGroup(permissionGroup);
+                _uow.Save();
                 var permissionGroupVm = Mapper.Map<PermissionGroupVm>(res);
                 return Ok(permissionGroupVm);
             }
@@ -61,6 +62,7 @@ namespace Identity.PermissionManager.Api.Controllers.PermissionManagement
                 if (role != null && permission != null)
                 {
                     var resp = _permissionManager.AttachPermissionToRole(permission, role);
+                    _uow.Save();
                     var respVm = Mapper.Map<PermissionVm>(resp);
                     return Ok(respVm);
                 }
@@ -82,7 +84,9 @@ namespace Identity.PermissionManager.Api.Controllers.PermissionManagement
                 if (role != null && permission != null)
                 {
                     var resp = _permissionManager.DetachPermissionFromRole(permission, role);
+                    _uow.Save();
                     var respVm = Mapper.Map<PermissionVm>(resp);
+                    
                     return Ok(respVm);
                 }
                 else throw new ArgumentException("Invalid Arguments");
@@ -104,6 +108,7 @@ namespace Identity.PermissionManager.Api.Controllers.PermissionManagement
                 if (group != null && permission != null)
                 {
                     var resp = _permissionManager.AttachPermissionToGroup(group, permission);
+                    _uow.Save();
                     var respVm = Mapper.Map<PermissionVm>(resp);
                     return Ok(respVm);
                 }
@@ -125,6 +130,7 @@ namespace Identity.PermissionManager.Api.Controllers.PermissionManagement
                 {
                     var resp = _permissionManager.DetachPermissionFromGroup(permission);
                     var respVm = Mapper.Map<PermissionVm>(resp);
+                    _uow.Save();
                     return Ok(respVm);
                 }
                 else throw new ArgumentException("Invalid Arguments");

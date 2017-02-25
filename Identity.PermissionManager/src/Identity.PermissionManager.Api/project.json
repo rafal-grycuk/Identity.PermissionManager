@@ -26,7 +26,8 @@
     "Microsoft.Extensions.Logging.Debug": "1.1.0",
     "Microsoft.Extensions.Options.ConfigurationExtensions": "1.1.0",
     "Microsoft.NETCore.App": "1.1.0",
-    "DataAccessLayer.Core.EntityFramework": "1.0.3"
+    "DataAccessLayer.Core.EntityFramework": "1.0.3",
+    "Microsoft.Extensions.SecretManager.Tools": "1.1.0-preview4-final"
   },
 
   "tools": {
@@ -65,6 +66,7 @@
   "scripts": {
     "postpublish": [ "dotnet publish-iis --publish-folder %publish:OutputPath% --framework %publish:FullTargetFramework%" ]
   },
+  "userSecretsId": "IdentityPermissionManagerApi-c23d27a4-eb88-4b18-9b77-2a93f3b15119",
 
   "runtimes": {
     "win10-x64": {}

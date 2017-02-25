@@ -125,6 +125,7 @@ namespace Identity.PermissionManager.Api.Controllers
         }
 
         [HttpGet]
+        [HasPermission(PermissionOperator.And, "Read", "Execute", "Write")]
         public IActionResult Get()
         {
             var authenticatedUser = ((ClaimsIdentity) User?.Identity)?.Claims?.First()?.Value;
@@ -134,8 +135,8 @@ namespace Identity.PermissionManager.Api.Controllers
                 if (user != null)
                 {
 
-                    var userIndividualVM = Mapper.Map<BaseUserInfoVm>(user);
-                    return Ok(userIndividualVM);
+                    var userIndividualVm = Mapper.Map<BaseUserInfoVm>(user);
+                    return Ok(userIndividualVm);
 
                 }
                 else

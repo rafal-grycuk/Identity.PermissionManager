@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using AutoMapper;
 using Identity.PermissionManager.BLL.Models;
 using Identity.PermissionManager.ViewModels.DTOs;
 using Identity.PermissionManager.ViewModels.VMs;
 
-namespace BeThere.WebAPI.Configuration
+namespace Identity.PermissionManager.Api.Configuration
 {
     public static class AutoMapperConfig
     {
@@ -35,7 +33,7 @@ namespace BeThere.WebAPI.Configuration
 
                 cfg.CreateMap<User, UserVm>();
                 cfg.CreateMap<UserDto, User>();
-                
+                cfg.CreateMap<User, BaseUserInfoVm>();
 
             });
 

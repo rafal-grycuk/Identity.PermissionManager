@@ -11,14 +11,14 @@ namespace Identity.PermissionManager.BLL.Logic.PermissionManager
         where TRole : IdentityRole<TKey>
         where TKey : IEquatable<TKey>
     {
-        private readonly IRepository<IdentityUser<TKey>> _userRepository;
+        private readonly IRepository<TUser> _userRepository;
         private readonly IRepository<Permission> _permissionRepository;
         private readonly IRepository<PermissionRole<TRole, TKey>> _permissionRoleRepository;
         private readonly IRepository<PermissionGroup> _permissionGroupRepository;
         private readonly IRepository<IdentityUserRole<TKey>> _userRoleRepository;
 
-        public PermissionManager(IRepository<IdentityUser<TKey>> userRepository, 
-                                 IRepository<Permission> permissionRepository, 
+        public PermissionManager(IRepository<TUser> userRepository,
+                                 IRepository<Permission> permissionRepository,
                                  IRepository<PermissionRole<TRole, TKey>> permissionRoleRepository,
                                  IRepository<PermissionGroup> permissionGroupRepository,
                                  IRepository<IdentityUserRole<TKey>> userRoleRepository)
@@ -48,7 +48,7 @@ namespace Identity.PermissionManager.BLL.Logic.PermissionManager
                 Permission permissionEntity = _permissionRepository.Get(permissionModel.Id);
                 if (permissionEntity == null)
                 {
-                    permissionEntity =_permissionRepository.Add(permissionModel);
+                    permissionEntity = _permissionRepository.Add(permissionModel);
                 }
                 else
                 {
@@ -86,10 +86,7 @@ namespace Identity.PermissionManager.BLL.Logic.PermissionManager
                         GroupName = groupModel.GroupName
                     };
                 }
-                //context.SaveChanges();
-                //var res = context.PermissionGroups.Include(p => p.Permissions);
-                //res.Load();
-                //return res.FirstOrDefault(x => x.Id == groupEntity.Id);
+
                 return groupEntity;
             }
             else throw new ArgumentNullException("Group name is empty or whitespace.");
@@ -101,11 +98,7 @@ namespace Identity.PermissionManager.BLL.Logic.PermissionManager
             {
                 permission.PermissionGroup = permissionGroup;
                 permission.PermissionGroupId = permissionGroup.Id;
-                permission =_permissionRepository.Update(permission);
-                //context.SaveChanges();
-                //var result = context.Permissions;
-                //result.Include(pr => pr.PermissionRoles).ThenInclude(r => r.Role).Include(g => g.PermissionGroup).Load();
-                //return result.FirstOrDefault(x => x.Id == permission.Id);
+                permission = _permissionRepository.Update(permission);
                 return permission;
             }
             else throw new ArgumentNullException("Permission and Permission Group cannot be null. ");
@@ -116,10 +109,6 @@ namespace Identity.PermissionManager.BLL.Logic.PermissionManager
             permission.PermissionGroup = null;
             permission.PermissionGroupId = null;
             permission = _permissionRepository.Update(permission);
-            //context.SaveChanges();
-            //var result = context.Permissions;
-            //result.Include(pr => pr.PermissionRoles).ThenInclude(r => r.Role).Include(g => g.PermissionGroup).Load();
-            //return result.FirstOrDefault(x => x.Id == permission.Id);
             return permission;
         }
 
@@ -134,10 +123,7 @@ namespace Identity.PermissionManager.BLL.Logic.PermissionManager
                     RoleId = role.Id
                 };
                 _permissionRoleRepository.Add(permissionRole);
-                //context.SaveChanges();
-                //var result = context.Permissions;
-                //result.Include(pr => pr.PermissionRoles).ThenInclude(r => r.Role).Include(g => g.PermissionGroup).Load();
-                //return result.FirstOrDefault(x => x.Id == permission.Id);
+
                 return permission;
             }
             else
@@ -148,16 +134,12 @@ namespace Identity.PermissionManager.BLL.Logic.PermissionManager
         {
             // potentially problems with ref types, check if string is working
             var permissionRole =
-                _permissionRoleRepository.Get(x => x.PermissionId == permission.Id && x.RoleId.Equals(role.Id), true,
-                    null, p => p.Permission.PermissionGroup, r => r.Role);
+                _permissionRoleRepository.Get(x => x.PermissionId == permission.Id && x.RoleId.Equals(role.Id), true);
             if (permissionRole != null)
             {
                 _permissionRoleRepository.Delete(permissionRole);
-                //context.SaveChanges();
-                //var result = context.Permissions;
-                //result.Include(pr => pr.PermissionRoles).ThenInclude(r => r.Role).Include(g => g.PermissionGroup).Load();
-                //return result.FirstOrDefault(x => x.Id == permission.Id);
-               return permission;
+
+                return permission;
             }
 
             else
